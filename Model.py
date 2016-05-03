@@ -13,7 +13,7 @@
 import re
 import pickle
 
-
+#Large Class
 class Model:
     def __init__(self):
         self.data_set = list()
@@ -34,6 +34,8 @@ class Model:
     def get_data(self):
         return self.display_data
 
+    # Single Responsibility
+
     def read_in_csv(self, path):
         print("loading file...")
         file = open(path)
@@ -45,7 +47,7 @@ class Model:
         if self.data_set is not []:
             print("File Loaded!")
         self.wash_data()
-
+    #Large Method
     def wash_data(self):
         index = 0
         del_num_list = list()
