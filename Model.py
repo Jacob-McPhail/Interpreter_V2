@@ -38,6 +38,7 @@ class Model:
     def match_bmi(self, data):
         return re.match("[0-9]{3}$", data)
 
+
     def match_weight(self, data):
         return re.match("(Normal|Overweight|Obesity|Underweight)", data)
 
