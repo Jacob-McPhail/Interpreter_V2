@@ -32,6 +32,7 @@ class Model:
     def match_gender(self, data):
         return re.match("(M|F)", data)
 
+
     def match_age(self, data):
         return re.match("[0-9]{1,2}$", data)
 
