@@ -7,11 +7,13 @@
 
 from Model import Model
 from View import View
+from Filer import Filer
 
 
 class Controller:
     def __init__(self, path):
-        self.myModel = Model()
+        self.myFiler = Filer()
+        self.myModel = Model(self.myFiler)
         if path != "" or path is not None:
             self.load_data(path)
         self.myView = View(self)

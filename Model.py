@@ -1,29 +1,16 @@
-"""
-    >>> myModel = Model()
-    >>> myModel.read_in_csv("TestData.csv")
-    loading file...
-    File Loaded!
-
-    >>> integer = myModel.wash_data().__len__()
-    >>> integer
-    7
-
-
-"""
 import re
 import pickle
 
-#Large Class
+
+# Large Class
 class Model:
-    def __init__(self):
+    def __init__(self, theFiler):
         self.data_set = list()
         self.display_data = list()
         self.wrong_data = list()
         self.file_there = ""
-
-    def add_new_data(self, new_array):
-        # try catch if its a list
-        self.data_set += new_array
+        self.del_num_list = list()
+        self.myFiler = theFiler
 
     def del_data(self):
         self.data_set = list()
@@ -34,72 +21,80 @@ class Model:
     def get_data(self):
         return self.display_data
 
-    # Single Responsibility
-
     def read_in_csv(self, path):
-        print("loading file...")
-        file = open(path)
-        txt = file.read()
-        li = txt.split('\n')
-        if li[-1].strip() == '':
-            del li[-1]
-        self.add_new_data(li)
-        if self.data_set is not []:
-            print("File Loaded!")
+        self.myFiler.read(path)
+        self.toDataSet()
         self.wash_data()
-    #Large Method
+
+    def match_id(self, data):
+        return re.match("^[A-Z][0-9]{3}$", data, flags=re.IGNORECASE)
+
+    def match_gender(self, data):
+        return re.match("(M|F)", data)
+
+    def match_age(self, data):
+        return re.match("[0-9]{1,2}$", data)
+
+    def match_bmi(self, data):
+        return re.match("[0-9]{3}$", data)
+
+    def match_weight(self, data):
+        return re.match("(Normal|Overweight|Obesity|Underweight)", data)
+
+    def match_sales(self, data):
+        return re.match("[0-9]{2,3}$", data)
+
+    def remove_wrong(self, matching, index):
+        inter = 0
+        if matching is None:
+            if inter == 0:
+                self.del_num_list.insert(self.del_num_list.__sizeof__(), index)
+                inter += 1
+
+        return
+
+    def toDataSet(self):
+        self.data_set = self.myFiler.getData()
+
     def wash_data(self):
         index = 0
-        del_num_list = list()
+        self.toDataSet()
         for i in self.data_set:
             tmp = self.data_set[index].split(',')
             index += 1
             num = 1
-            inter = 0
+
             matching = None
-
             self.display_data.insert(self.display_data.__sizeof__(), tmp)
-            for data in tmp:
-                if num == 1:
-                    matching = re.match("^[A-Z][0-9]{3}$", data, flags=re.IGNORECASE)
-                elif num == 2:
-                    matching = re.match("(M|F)", data)
-                elif num == 3:
-                    matching = re.match("[0-9]{1,2}$", data)
-                elif num == 4:
-                    matching = re.match("[0-9]{3}$", data)
-                elif num == 5:
-                    matching = re.match("(Normal|Overweight|Obesity|Underweight)", data)
-                elif num == 6:
-                    matching = re.match("[0-9]{2,3}$", data)
-                num += 1
-                if matching is None:
-                    self.wrong_data.insert(self.wrong_data.__sizeof__(), data)
-                    if inter == 0:
-                        del_num_list.insert(del_num_list.__sizeof__(), index)
-                        inter += 1
-                    # Saving the specific data that's wrong - can change to whole line if we want
 
-                    # Storing which indexes of data set have incorrect data.
-                    # To either remove it entirely or take out of displaying
+            for j in range(0, len(tmp), 6):
+                matching = self.match_id(tmp[j])
+                self.remove_wrong(matching, j)
+                matching = self.match_gender(tmp[j + 1])
+                self.remove_wrong(matching, j + 1)
+                matching = self.match_age(tmp[j + 2])
+                self.remove_wrong(matching, j + 2)
+                matching = self.match_bmi(tmp[j + 3])
+                self.remove_wrong(matching, j + 3)
+                matching = self.match_weight(tmp[j + 4])
+                self.remove_wrong(matching, j + 4)
+                matching = self.match_sales(tmp[j + 5])
+                self.remove_wrong(matching, j + 5)
 
-        del_num_list.reverse()
-        for item in del_num_list:
+        self.del_num_list.reverse()
+        for item in self.del_num_list:
             self.data_set.pop(item - 1)
-            
+
         return self.data_set
 
+    def read_in_csv(self, path):
+        self.myFiler.read(path)
+
     def save_data(self):
-        with open('data.pickle', 'wb') as f:
-            pickle.dump(self.display_data, f)
+        self.myFiler.save_data(self.display_data)
 
     def pickle_data(self):
-        try:
-            with open('data.pickle', 'rb') as f:
-                self.display_data = pickle.load(f)
-        except FileNotFoundError:
-            print("Existing data not found.")
-            return
+        self.myFiler.pickle_data(self.display_data)
 
     def get_sales(self):
         result = []
@@ -132,4 +127,3 @@ class Model:
             elif i[1] == 'F':
                 f += 1
         return [m, f]
-
