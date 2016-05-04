@@ -74,7 +74,6 @@ class Model:
                 self.del_num_list.insert(self.del_num_list.__sizeof__(), index)
                 inter += 1
 
-    # Long Method
     def wash_data(self):
         index = 0
         for i in self.data_set:
