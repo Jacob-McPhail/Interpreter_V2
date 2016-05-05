@@ -22,20 +22,6 @@ class Model:
     def get_data(self):
         return self.display_data
 
-    def read_in_csv(self, path):
-        self.myFiler.read(path)
-        self.toDataSet()
-        self.wash_data()
-
-    def remove_wrong(self, matching, index):
-        inter = 0
-        if matching is None:
-            if inter == 0:
-                self.del_num_list.insert(self.del_num_list.__sizeof__(), index)
-                inter += 1
-
-        return
-
     def toDataSet(self):
         self.data_set = self.myFiler.getData()
 
@@ -65,13 +51,10 @@ class Model:
                 self.wrong_matching.clear()
 
         self.del_num_list.reverse()
+
         for item in self.del_num_list:
             self.data_set.pop(item - 1)
-
         return self.data_set
-
-    def read_in_csv(self, path):
-        self.myFiler.read(path)
 
     def save_data(self):
         self.myFiler.save_data(self.display_data)

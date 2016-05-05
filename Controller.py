@@ -27,6 +27,7 @@ class Controller:
 
     def wash_data(self):
         self.myModel.wash_data()
+        self.myModel.toDataSet()
 
     def get_data(self):
         return self.myModel.get_data()
@@ -47,7 +48,7 @@ class Controller:
         except FileNotFoundError:
             print("File Does Not Exist")
             return
-        self.myModel.read_in_csv(path)
+        self.myFiler.read(path)
         self.wash_data()
 
     def save_data(self):
