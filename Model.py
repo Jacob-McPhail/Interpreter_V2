@@ -2,7 +2,6 @@ import re
 import pickle
 
 
-# Large Class
 class Model:
     def __init__(self, theFiler):
         self.data_set = list()
@@ -10,6 +9,7 @@ class Model:
         self.wrong_data = list()
         self.file_there = ""
         self.del_num_list = list()
+        self.wrong_matching = []
         self.myFiler = theFiler
 
     def del_data(self):
@@ -58,6 +58,11 @@ class Model:
     def toDataSet(self):
         self.data_set = self.myFiler.getData()
 
+    def check_and_delete(self):
+        for data in self.wrong_matching:
+            if data == None:
+                self.data_set.remove(
+
     def wash_data(self):
         index = 0
         self.toDataSet()
@@ -65,24 +70,20 @@ class Model:
             tmp = self.data_set[index].split(',')
             index += 1
             num = 1
-
             matching = None
             self.display_data.insert(self.display_data.__sizeof__(), tmp)
 
             for j in range(0, len(tmp), 6):
-                matching = self.match_id(tmp[j])
-                self.remove_wrong(matching, j)
-                matching = self.match_gender(tmp[j + 1])
-                self.remove_wrong(matching, j + 1)
-                matching = self.match_age(tmp[j + 2])
-                self.remove_wrong(matching, j + 2)
-                matching = self.match_bmi(tmp[j + 3])
-                self.remove_wrong(matching, j + 3)
-                matching = self.match_weight(tmp[j + 4])
-                self.remove_wrong(matching, j + 4)
-                matching = self.match_sales(tmp[j + 5])
-                self.remove_wrong(matching, j + 5)
+                self.wrong_matching.append(self.match_id(tmp[j]))
+                self.wrong_matching.append(self.match_gender(tmp[j + 1]))
+                self.wrong_matching.append(self.match_age(tmp[j + 2]))
+                self.wrong_matching.append(self.match_bmi(tmp[j + 3]))
+                self.wrong_matching.append(self.match_weight(tmp[j + 4]))
+                self.wrong_matching.append(self.match_sales(tmp[j + 5]))
+                
+        self.check_and_delete(index)
 
+        self.check_and_delete(index)
         self.del_num_list.reverse()
         for item in self.del_num_list:
             self.data_set.pop(item - 1)
