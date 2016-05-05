@@ -3,7 +3,7 @@ import pickle
 
 
 class Model:
-    def __init__(self, theFiler):
+    def __init__(self, theFiler, theValidator):
         self.data_set = list()
         self.display_data = list()
         self.wrong_data = list()
@@ -11,6 +11,7 @@ class Model:
         self.del_num_list = list()
         self.wrong_matching = []
         self.myFiler = theFiler
+        self._ = theValidator
 
     def del_data(self):
         self.data_set = list()
@@ -26,26 +27,6 @@ class Model:
         self.toDataSet()
         self.wash_data()
 
-    def match_id(self, data):
-        return re.match("^[A-Z][0-9]{3}$", data, flags=re.IGNORECASE)
-
-    def match_gender(self, data):
-        return re.match("(M|F)", data)
-
-
-    def match_age(self, data):
-        return re.match("[0-9]{1,2}$", data)
-
-    def match_bmi(self, data):
-        return re.match("[0-9]{3}$", data)
-
-
-    def match_weight(self, data):
-        return re.match("(Normal|Overweight|Obesity|Underweight)", data)
-
-    def match_sales(self, data):
-        return re.match("[0-9]{2,3}$", data)
-
     def remove_wrong(self, matching, index):
         inter = 0
         if matching is None:
@@ -58,10 +39,10 @@ class Model:
     def toDataSet(self):
         self.data_set = self.myFiler.getData()
 
-    def check_and_delete(self):
+    def check_and_delete(self,index):
         for data in self.wrong_matching:
             if data == None:
-                self.data_set.remove(
+                self.data_set.pop(index - 1)
 
     def wash_data(self):
         index = 0
@@ -74,16 +55,15 @@ class Model:
             self.display_data.insert(self.display_data.__sizeof__(), tmp)
 
             for j in range(0, len(tmp), 6):
-                self.wrong_matching.append(self.match_id(tmp[j]))
-                self.wrong_matching.append(self.match_gender(tmp[j + 1]))
-                self.wrong_matching.append(self.match_age(tmp[j + 2]))
-                self.wrong_matching.append(self.match_bmi(tmp[j + 3]))
-                self.wrong_matching.append(self.match_weight(tmp[j + 4]))
-                self.wrong_matching.append(self.match_sales(tmp[j + 5]))
-                
-        self.check_and_delete(index)
+                self.wrong_matching.append(self._.match_id(tmp[j]))
+                self.wrong_matching.append(self._.match_gender(tmp[j + 1]))
+                self.wrong_matching.append(self._.match_age(tmp[j + 2]))
+                self.wrong_matching.append(self._.match_bmi(tmp[j + 3]))
+                self.wrong_matching.append(self._.match_weight(tmp[j + 4]))
+                self.wrong_matching.append(self._.match_sales(tmp[j + 5]))
+                self.check_and_delete(index)
+                self.wrong_matching.clear()
 
-        self.check_and_delete(index)
         self.del_num_list.reverse()
         for item in self.del_num_list:
             self.data_set.pop(item - 1)

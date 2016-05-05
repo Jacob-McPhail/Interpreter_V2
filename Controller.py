@@ -8,12 +8,14 @@
 from Model import Model
 from View import View
 from Filer import Filer
+from Validator import Validator
 
 
 class Controller:
     def __init__(self, path):
         self.myFiler = Filer()
-        self.myModel = Model(self.myFiler)
+        self.myValidator = Validator()
+        self.myModel = Model(self.myFiler, self.myValidator)
         if path != "" or path is not None:
             self.load_data(path)
         self.myView = View(self)
