@@ -93,3 +93,6 @@ class Model:
             elif i[1] == 'F':
                 f += 1
         return [m, f]
+
+    def read(self, path):
+        self.myFiler.read(path)

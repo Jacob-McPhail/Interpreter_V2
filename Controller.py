@@ -13,9 +13,7 @@ from Validator import Validator
 
 class Controller:
     def __init__(self, path):
-        self.myFiler = Filer()
-        self.myValidator = Validator()
-        self.myModel = Model(self.myFiler, self.myValidator)
+        self.myModel = Model(Filer(), Validator())
         if path != "" or path is not None:
             self.load_data(path)
         self.myView = View(self)
@@ -48,7 +46,7 @@ class Controller:
         except FileNotFoundError:
             print("File Does Not Exist")
             return
-        self.myFiler.read(path)
+        self.myModel.read(path)
         self.wash_data()
 
     def save_data(self):
