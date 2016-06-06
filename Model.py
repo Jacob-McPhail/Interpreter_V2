@@ -1,5 +1,6 @@
 import re
 import pickle
+from PersonBuilder import PersonBuilder
 
 
 class Model:
@@ -11,6 +12,7 @@ class Model:
         self.del_num_list = list()
         self.wrong_matching = []
         self.myFiler = theFiler
+        self.myPerson = PersonBuilder()
         self._ = theValidator
 
     def del_data(self):
@@ -41,12 +43,13 @@ class Model:
             self.display_data.insert(self.display_data.__sizeof__(), tmp)
 
             for j in range(0, len(tmp), 6):
-                self.wrong_matching.append(self._.match_id(tmp[j]))
-                self.wrong_matching.append(self._.match_gender(tmp[j + 1]))
-                self.wrong_matching.append(self._.match_age(tmp[j + 2]))
-                self.wrong_matching.append(self._.match_bmi(tmp[j + 3]))
-                self.wrong_matching.append(self._.match_weight(tmp[j + 4]))
-                self.wrong_matching.append(self._.match_sales(tmp[j + 5]))
+                self.myPerson.buildPerson(tmp[j],tmp[j + 1],tmp[j + 2],tmp[j + 3],tmp[j + 4], tmp[j + 5])
+                self.wrong_matching.append(self._.match_id(self.myPerson.get_id()))
+                self.wrong_matching.append(self._.match_gender(self.myPerson.get_gender()))
+                self.wrong_matching.append(self._.match_age(self.myPerson.get_age()))
+                self.wrong_matching.append(self._.match_bmi(self.myPerson.get_bmi()))
+                self.wrong_matching.append(self._.match_weight(self.myPerson.get_weight()))
+                self.wrong_matching.append(self._.match_sales(self.myPerson.get_sales()))
                 self.check_and_delete(index)
                 self.wrong_matching.clear()
 
