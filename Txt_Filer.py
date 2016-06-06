@@ -1,6 +1,5 @@
 from Filer import Filer
 
-
 class TXTReader(Filer):
     def read(self, path):
             print("loading file...")
